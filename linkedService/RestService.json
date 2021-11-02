@@ -1,0 +1,12 @@
+{
+	"name": "RestService",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://health.data.ny.gov/api/views/jxy9-yhdk/rows.json?accessType=DOWNLOAD",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
