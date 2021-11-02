@@ -3,7 +3,18 @@
 	"properties": {
 		"type": "WranglingDataFlow",
 		"typeProperties": {
-			"sources": []
+			"sources": [
+				{
+					"name": "census_parquet",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  census_parquet",
+					"dataset": {
+						"referenceName": "census_parquet",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared census_parquet = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://afglearnnov2021.blob.core.windows.net/extracted/census_parquet\"),\r\n  Parquet = Parquet.Document(AdfDoc)\r\nin\r\n  Parquet;\r\nshared UserQuery = let\r\n  Source = census_parquet,\r\n  #\"Renamed columns\" = Table.RenameColumns(Source, {{\"country\", \"country_id\"}}),\r\n  #\"Grouped rows\" = Table.Group(#\"Renamed columns\", {\"country_id\", \"country_name\", \"Year\"}, {{\"avg_presence\", each List.Average([month_presence]), type nullable number}})\r\nin\r\n  #\"Grouped rows\";\r\n",
+			"documentLocale": "en-us"
 		}
 	}
 }
