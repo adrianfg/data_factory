@@ -1,5 +1,5 @@
 {
-	"name": "Parquet1",
+	"name": "census_parquet",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
@@ -10,10 +10,36 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "census_parquet",
 				"container": "extracted"
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "country",
+				"type": "UTF8"
+			},
+			{
+				"name": "Partner",
+				"type": "UTF8"
+			},
+			{
+				"name": "Year",
+				"type": "INT_16"
+			},
+			{
+				"name": "month",
+				"type": "INT_16"
+			},
+			{
+				"name": "month_presence",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "country_name",
+				"type": "UTF8"
+			}
+		]
 	}
 }

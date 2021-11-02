@@ -15,14 +15,14 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Parquet1",
+						"referenceName": "census_parquet",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
 				}
 			],
 			"transformations": [],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tformat: 'parquet',\n\tpartitionFileNames:['census_parquet'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tpartitionBy('hash', 1)) ~> sink1"
+			"script": "source(output(\n\t\tcountry as string,\n\t\tPartner as string,\n\t\tYear as string,\n\t\tmonth as string,\n\t\tmonth_presence as string,\n\t\tcountry_name as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tinput(\n\t\tcountry as string,\n\t\tPartner as string,\n\t\tYear as short,\n\t\tmonth as short,\n\t\tmonth_presence as double,\n\t\tcountry_name as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['census_parquet'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tpartitionBy('hash', 1)) ~> sink1"
 		}
 	}
 }
