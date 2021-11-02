@@ -1,0 +1,9 @@
+{
+	"name": "DataFactoryNovember",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "bf22edcd-71fb-4815-8e32-fc86897a70a2",
+		"tenantId": "c7c3e22f-8ffb-4ddf-977c-2d93fe9c9a20"
+	}
+}
