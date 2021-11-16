@@ -19,10 +19,24 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ESGextracted",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
 				}
 			],
-			"transformations": [],
-			"script": "source(output(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as string,\n\t\tS as string,\n\t\tG as string,\n\t\tESG as string,\n\t\tEPS as string,\n\t\t{Profit Margin } as string,\n\t\t{Tobin's Q} as string,\n\t\t{Return on Asset} as string,\n\t\t{Return on Equity} as string,\n\t\t{Debt To Market Cap Ratio} as string,\n\t\t{Total Asset Turnover} as string,\n\t\t{Price to Sales Ratio} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as string,\n\t\tS as string,\n\t\tG as string,\n\t\tESG as string,\n\t\tEPS as string,\n\t\t{Profit Margin } as string,\n\t\t{Tobin's Q} as string,\n\t\t{Return on Asset} as string,\n\t\t{Return on Equity} as string,\n\t\t{Debt To Market Cap Ratio} as string,\n\t\t{Total Asset Turnover} as string,\n\t\t{Price to Sales Ratio} as string\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"transformations": [
+				{
+					"name": "AggregateByEquity"
+				},
+				{
+					"name": "filterNulls"
+				}
+			],
+			"script": "source(output(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as double,\n\t\tS as double,\n\t\tG as double,\n\t\tESG as double,\n\t\tEPS as double,\n\t\t{Profit Margin } as double,\n\t\t{Tobin's Q} as double,\n\t\t{Return on Asset} as double,\n\t\t{Return on Equity} as double,\n\t\t{Debt To Market Cap Ratio} as double,\n\t\t{Total Asset Turnover} as double,\n\t\t{Price to Sales Ratio} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 3,\n\t\tEquity\n\t)) ~> source1\nfilterNulls aggregate(groupBy(EquityAgged = Equity),\n\tESG_avg = avg(ESG),\n\t\tnb_Tickers = countDistinct({Ticker Symbol})) ~> AggregateByEquity\nsource1 filter(not(isNull({Ticker Symbol}))) ~> filterNulls\nAggregateByEquity sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as string,\n\t\tS as string,\n\t\tG as string,\n\t\tESG as string,\n\t\tEPS as string,\n\t\t{Profit Margin } as string,\n\t\t{Tobin's Q} as string,\n\t\t{Return on Asset} as string,\n\t\t{Return on Equity} as string,\n\t\t{Debt To Market Cap Ratio} as string,\n\t\t{Total Asset Turnover} as string,\n\t\t{Price to Sales Ratio} as string\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tpartitionBy('hash', 3,\n\t\tEquityAgged\n\t)) ~> sink1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink2"
 		}
 	}
 }
