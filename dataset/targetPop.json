@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "population.parquet",
 				"container": "extracted"
 			},
 			"compressionCodec": "snappy"
