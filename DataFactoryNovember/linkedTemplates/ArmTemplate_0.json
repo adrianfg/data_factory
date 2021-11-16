@@ -115,6 +115,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"folderPath": "esgAll",
 						"container": "extracted"
 					},
 					"columnDelimiter": ",",
@@ -231,6 +232,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"folderPath": "esgAgged",
 						"container": "extracted"
 					},
 					"columnDelimiter": ",",
