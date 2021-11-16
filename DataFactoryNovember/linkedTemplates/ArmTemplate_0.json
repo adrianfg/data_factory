@@ -102,25 +102,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RestBabyNames')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "RestService",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "RestResource",
-				"typeProperties": {},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/RestService')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/census_parquet')]",
+			"name": "[concat(parameters('factoryName'), '/ESGextracted')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -129,139 +111,18 @@
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Parquet",
+				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "census_parquet",
 						"container": "extracted"
 					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "country",
-						"type": "UTF8"
-					},
-					{
-						"name": "Partner",
-						"type": "UTF8"
-					},
-					{
-						"name": "Year",
-						"type": "INT_16"
-					},
-					{
-						"name": "month",
-						"type": "INT_16"
-					},
-					{
-						"name": "month_presence",
-						"type": "DOUBLE"
-					},
-					{
-						"name": "country_name",
-						"type": "UTF8"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/targetPop')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "population.parquet",
-						"container": "extracted"
-					},
-					"compressionCodec": "snappy"
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
 				},
 				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/usPop')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "population.json",
-						"container": "uploads"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string"
-						},
-						"features": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"type": {
-										"type": "string"
-									},
-									"id": {
-										"type": "string"
-									},
-									"properties": {
-										"type": "object",
-										"properties": {
-											"name": {
-												"type": "string"
-											}
-										}
-									},
-									"geometry": {
-										"type": "object",
-										"properties": {
-											"type": {
-												"type": "string"
-											},
-											"coordinates": {
-												"type": "array",
-												"items": {
-													"type": "array",
-													"items": {
-														"type": "array",
-														"items": {
-															"type": "number"
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
@@ -445,7 +306,25 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ESGextracted')]",
+			"name": "[concat(parameters('factoryName'), '/RestBabyNames')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RestService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/RestService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/census_parquet')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -454,16 +333,64 @@
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "DelimitedText",
+				"type": "Parquet",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "census_parquet",
 						"container": "extracted"
 					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "country",
+						"type": "UTF8"
+					},
+					{
+						"name": "Partner",
+						"type": "UTF8"
+					},
+					{
+						"name": "Year",
+						"type": "INT_16"
+					},
+					{
+						"name": "month",
+						"type": "INT_16"
+					},
+					{
+						"name": "month_presence",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "country_name",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/targetPop')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "population.parquet",
+						"container": "extracted"
+					},
+					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
@@ -472,72 +399,124 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/extractESG')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/usPop')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "extractPop",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "ESGfactset",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ESGextracted",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
 				},
-				"annotations": []
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "population.json",
+						"container": "uploads"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string"
+						},
+						"features": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"type": "string"
+									},
+									"id": {
+										"type": "string"
+									},
+									"properties": {
+										"type": "object",
+										"properties": {
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"geometry": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"type": "string"
+											},
+											"coordinates": {
+												"type": "array",
+												"items": {
+													"type": "array",
+													"items": {
+														"type": "array",
+														"items": {
+															"type": "number"
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ESGfactset",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ESGtransformed",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "ESGextracted",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AggregateByEquity"
+						},
+						{
+							"name": "filterNulls"
+						}
+					],
+					"script": "source(output(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as double,\n\t\tS as double,\n\t\tG as double,\n\t\tESG as double,\n\t\tEPS as double,\n\t\t{Profit Margin } as double,\n\t\t{Tobin's Q} as double,\n\t\t{Return on Asset} as double,\n\t\t{Return on Equity} as double,\n\t\t{Debt To Market Cap Ratio} as double,\n\t\t{Total Asset Turnover} as double,\n\t\t{Price to Sales Ratio} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 3,\n\t\tEquity\n\t)) ~> source1\nfilterNulls aggregate(groupBy(EquityAgged = Equity),\n\tESG_avg = avg(ESG),\n\t\tnb_Tickers = countDistinct({Ticker Symbol})) ~> AggregateByEquity\nsource1 filter(not(isNull({Ticker Symbol}))) ~> filterNulls\nAggregateByEquity sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as string,\n\t\tS as string,\n\t\tG as string,\n\t\tESG as string,\n\t\tEPS as string,\n\t\t{Profit Margin } as string,\n\t\t{Tobin's Q} as string,\n\t\t{Return on Asset} as string,\n\t\t{Return on Equity} as string,\n\t\t{Debt To Market Cap Ratio} as string,\n\t\t{Total Asset Turnover} as string,\n\t\t{Price to Sales Ratio} as string\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tpartitionBy('hash', 3,\n\t\tEquityAgged\n\t)) ~> sink1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> sink2"
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ESGfactset')]",
+				"[concat(variables('factoryId'), '/datasets/ESGtransformed')]",
 				"[concat(variables('factoryId'), '/datasets/ESGextracted')]"
 			]
 		},
@@ -567,37 +546,52 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
+			"name": "[concat(parameters('factoryName'), '/AggESG')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "ESGfactset",
-								"type": "DatasetReference"
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {},
+									"sink2": {}
+								}
 							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "ESGtransformed",
-								"type": "DatasetReference"
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
-							"name": "sink1"
+							"traceLevel": "Coarse",
+							"runConcurrently": true
 						}
-					],
-					"transformations": [],
-					"script": "source(output(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as string,\n\t\tS as string,\n\t\tG as string,\n\t\tESG as string,\n\t\tEPS as string,\n\t\t{Profit Margin } as string,\n\t\t{Tobin's Q} as string,\n\t\t{Return on Asset} as string,\n\t\t{Return on Equity} as string,\n\t\t{Debt To Market Cap Ratio} as string,\n\t\t{Total Asset Turnover} as string,\n\t\t{Price to Sales Ratio} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as string,\n\t\tS as string,\n\t\tG as string,\n\t\tESG as string,\n\t\tEPS as string,\n\t\t{Profit Margin } as string,\n\t\t{Tobin's Q} as string,\n\t\t{Return on Asset} as string,\n\t\t{Return on Equity} as string,\n\t\t{Debt To Market Cap Ratio} as string,\n\t\t{Total Asset Turnover} as string,\n\t\t{Price to Sales Ratio} as string\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ESGfactset')]",
-				"[concat(variables('factoryId'), '/datasets/ESGtransformed')]"
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
 			]
 		}
 	]
