@@ -21,7 +21,7 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/extractPop')]",
+			"name": "[concat(parameters('factoryName'), '/extractESG')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -40,37 +40,39 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "JsonSource",
+								"type": "DelimitedTextSource",
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
 									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
-									"type": "JsonReadSettings"
+									"type": "DelimitedTextReadSettings"
 								}
 							},
 							"sink": {
-								"type": "ParquetSink",
+								"type": "DelimitedTextSink",
 								"storeSettings": {
 									"type": "AzureBlobStorageWriteSettings"
 								},
 								"formatSettings": {
-									"type": "ParquetWriteSettings"
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
 								}
 							},
 							"enableStaging": false
 						},
 						"inputs": [
 							{
-								"referenceName": "usPop",
+								"referenceName": "ESGfactset",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "targetPop",
+								"referenceName": "ESGextracted",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -84,8 +86,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/usPop')]",
-				"[concat(variables('factoryId'), '/datasets/targetPop')]"
+				"[concat(variables('factoryId'), '/datasets/ESGfactset')]",
+				"[concat(variables('factoryId'), '/datasets/ESGextracted')]"
 			]
 		},
 		{
@@ -358,6 +360,274 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/census_parquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ESGfactset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "ESG_scores.csv",
+						"container": "uploads"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Company Name",
+						"type": "String"
+					},
+					{
+						"name": "Equity",
+						"type": "String"
+					},
+					{
+						"name": "Ticker Symbol",
+						"type": "String"
+					},
+					{
+						"name": "E",
+						"type": "String"
+					},
+					{
+						"name": "S",
+						"type": "String"
+					},
+					{
+						"name": "G",
+						"type": "String"
+					},
+					{
+						"name": "ESG",
+						"type": "String"
+					},
+					{
+						"name": "EPS",
+						"type": "String"
+					},
+					{
+						"name": "Profit Margin ",
+						"type": "String"
+					},
+					{
+						"name": "Tobin's Q",
+						"type": "String"
+					},
+					{
+						"name": "Return on Asset",
+						"type": "String"
+					},
+					{
+						"name": "Return on Equity",
+						"type": "String"
+					},
+					{
+						"name": "Debt To Market Cap Ratio",
+						"type": "String"
+					},
+					{
+						"name": "Total Asset Turnover",
+						"type": "String"
+					},
+					{
+						"name": "Price to Sales Ratio",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ESGtransformed')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "extracted"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Company Name",
+						"type": "String"
+					},
+					{
+						"name": "Equity",
+						"type": "String"
+					},
+					{
+						"name": "Ticker Symbol",
+						"type": "String"
+					},
+					{
+						"name": "E",
+						"type": "String"
+					},
+					{
+						"name": "S",
+						"type": "String"
+					},
+					{
+						"name": "G",
+						"type": "String"
+					},
+					{
+						"name": "ESG",
+						"type": "String"
+					},
+					{
+						"name": "EPS",
+						"type": "String"
+					},
+					{
+						"name": "Profit Margin ",
+						"type": "String"
+					},
+					{
+						"name": "Tobin's Q",
+						"type": "String"
+					},
+					{
+						"name": "Return on Asset",
+						"type": "String"
+					},
+					{
+						"name": "Return on Equity",
+						"type": "String"
+					},
+					{
+						"name": "Debt To Market Cap Ratio",
+						"type": "String"
+					},
+					{
+						"name": "Total Asset Turnover",
+						"type": "String"
+					},
+					{
+						"name": "Price to Sales Ratio",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ESGfactset",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ESGtransformed",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as string,\n\t\tS as string,\n\t\tG as string,\n\t\tESG as string,\n\t\tEPS as string,\n\t\t{Profit Margin } as string,\n\t\t{Tobin's Q} as string,\n\t\t{Return on Asset} as string,\n\t\t{Return on Equity} as string,\n\t\t{Debt To Market Cap Ratio} as string,\n\t\t{Total Asset Turnover} as string,\n\t\t{Price to Sales Ratio} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\t{Company Name} as string,\n\t\tEquity as string,\n\t\t{Ticker Symbol} as string,\n\t\tE as string,\n\t\tS as string,\n\t\tG as string,\n\t\tESG as string,\n\t\tEPS as string,\n\t\t{Profit Margin } as string,\n\t\t{Tobin's Q} as string,\n\t\t{Return on Asset} as string,\n\t\t{Return on Equity} as string,\n\t\t{Debt To Market Cap Ratio} as string,\n\t\t{Total Asset Turnover} as string,\n\t\t{Price to Sales Ratio} as string\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ESGfactset')]",
+				"[concat(variables('factoryId'), '/datasets/ESGtransformed')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ESGextracted')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "extracted"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "extractESG",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 3,
+						"startTime": "2021-11-16T20:12:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/extractESG')]"
 			]
 		}
 	]
