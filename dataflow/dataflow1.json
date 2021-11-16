@@ -6,10 +6,10 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Census_csv",
+						"referenceName": "RestBabyNames",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "restbby"
 				}
 			],
 			"sinks": [
@@ -21,8 +21,12 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [],
-			"script": "source(output(\n\t\tcountry as string,\n\t\tPartner as string,\n\t\tYear as string,\n\t\tmonth as string,\n\t\tmonth_presence as string,\n\t\tcountry_name as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tinput(\n\t\tcountry as string,\n\t\tPartner as string,\n\t\tYear as short,\n\t\tmonth as short,\n\t\tmonth_presence as double,\n\t\tcountry_name as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['census_parquet'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tpartitionBy('hash', 1)) ~> sink1"
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				}
+			],
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\thttpMethod: 'GET',\n\ttimeout: 30,\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'arrayOfDocuments']) ~> restbby\nrestbby derive() ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tinput(\n\t\tcountry as string,\n\t\tPartner as string,\n\t\tYear as short,\n\t\tmonth as short,\n\t\tmonth_presence as double,\n\t\tcountry_name as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['census_parquet'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tpartitionBy('hash', 1)) ~> sink1"
 		}
 	}
 }
