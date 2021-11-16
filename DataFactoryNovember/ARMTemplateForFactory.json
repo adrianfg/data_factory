@@ -1,0 +1,363 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DataFactoryNovember"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"RestService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://health.data.ny.gov/api/views/jxy9-yhdk/rows.json?accessType=DOWNLOAD"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/extractPop')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "extractPop",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "usPop",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "targetPop",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/usPop')]",
+				"[concat(variables('factoryId'), '/datasets/targetPop')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Census_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Presence by Country MSH Henner.csv",
+						"container": "uploads"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "country",
+						"type": "String"
+					},
+					{
+						"name": "Partner",
+						"type": "String"
+					},
+					{
+						"name": "Year",
+						"type": "String"
+					},
+					{
+						"name": "month",
+						"type": "String"
+					},
+					{
+						"name": "month_presence",
+						"type": "String"
+					},
+					{
+						"name": "country_name",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestBabyNames')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RestService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/RestService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/census_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "census_parquet",
+						"container": "extracted"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "country",
+						"type": "UTF8"
+					},
+					{
+						"name": "Partner",
+						"type": "UTF8"
+					},
+					{
+						"name": "Year",
+						"type": "INT_16"
+					},
+					{
+						"name": "month",
+						"type": "INT_16"
+					},
+					{
+						"name": "month_presence",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "country_name",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/targetPop')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "extracted"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/usPop')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "population.json",
+						"container": "uploads"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string"
+						},
+						"features": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"type": "string"
+									},
+									"id": {
+										"type": "string"
+									},
+									"properties": {
+										"type": "object",
+										"properties": {
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"geometry": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"type": "string"
+											},
+											"coordinates": {
+												"type": "array",
+												"items": {
+													"type": "array",
+													"items": {
+														"type": "array",
+														"items": {
+															"type": "number"
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/powerquery1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "census_parquet",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> census_parquet",
+							"dataset": {
+								"referenceName": "census_parquet",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared census_parquet = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://afglearnnov2021.blob.core.windows.net/extracted/census_parquet\"),\r\n  Parquet = Parquet.Document(AdfDoc)\r\nin\r\n  Parquet;\r\nshared UserQuery = let\r\n  Source = census_parquet,\r\n  #\"Renamed columns\" = Table.RenameColumns(Source, {{\"country\", \"country_id\"}}),\r\n  #\"Grouped rows\" = Table.Group(#\"Renamed columns\", {\"country_id\", \"country_name\", \"Year\"}, {{\"avg_presence\", each List.Average([month_presence]), type nullable number}})\r\nin\r\n  #\"Grouped rows\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/census_parquet')]"
+			]
+		}
+	]
+}
