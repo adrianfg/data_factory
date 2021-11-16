@@ -1,0 +1,84 @@
+{
+	"name": "ESGfactset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ESG_scores.csv",
+				"container": "uploads"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Company Name",
+				"type": "String"
+			},
+			{
+				"name": "Equity",
+				"type": "String"
+			},
+			{
+				"name": "Ticker Symbol",
+				"type": "String"
+			},
+			{
+				"name": "E",
+				"type": "String"
+			},
+			{
+				"name": "S",
+				"type": "String"
+			},
+			{
+				"name": "G",
+				"type": "String"
+			},
+			{
+				"name": "ESG",
+				"type": "String"
+			},
+			{
+				"name": "EPS",
+				"type": "String"
+			},
+			{
+				"name": "Profit Margin ",
+				"type": "String"
+			},
+			{
+				"name": "Tobin's Q",
+				"type": "String"
+			},
+			{
+				"name": "Return on Asset",
+				"type": "String"
+			},
+			{
+				"name": "Return on Equity",
+				"type": "String"
+			},
+			{
+				"name": "Debt To Market Cap Ratio",
+				"type": "String"
+			},
+			{
+				"name": "Total Asset Turnover",
+				"type": "String"
+			},
+			{
+				"name": "Price to Sales Ratio",
+				"type": "String"
+			}
+		]
+	}
+}
