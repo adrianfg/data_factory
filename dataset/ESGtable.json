@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable1",
+	"name": "ESGtable",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabase",
@@ -9,7 +9,7 @@
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "esg",
+			"schema": "dbo",
 			"table": "raw"
 		}
 	}

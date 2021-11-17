@@ -15,6 +15,23 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "year",
+				"type": "INT64"
+			},
+			{
+				"name": "age",
+				"type": "INT64"
+			},
+			{
+				"name": "sex",
+				"type": "INT64"
+			},
+			{
+				"name": "people",
+				"type": "INT64"
+			}
+		]
 	}
 }
