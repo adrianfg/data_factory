@@ -1,0 +1,36 @@
+{
+	"name": "AppendedESG",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "extracted"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "year",
+				"type": "INT64"
+			},
+			{
+				"name": "age",
+				"type": "INT64"
+			},
+			{
+				"name": "sex",
+				"type": "INT64"
+			},
+			{
+				"name": "people",
+				"type": "INT64"
+			}
+		]
+	}
+}
