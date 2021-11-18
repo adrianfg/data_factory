@@ -1,5 +1,5 @@
 {
-	"name": "AggESG",
+	"name": "splitAndAggESGpipe",
 	"properties": {
 		"activities": [
 			{
