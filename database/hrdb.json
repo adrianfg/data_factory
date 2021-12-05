@@ -1,0 +1,23 @@
+{
+	"name": "hrdb",
+	"properties": {
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"Properties": {
+			"IsSyMSCDMDatabase": true,
+			"DerivedModelDBInfo": "{\"ModelDirectives\":{\"BaseModel\":{\"Name\":\"FundManagement\",\"Version\":\"0.1.0\"}}}"
+		},
+		"Name": "hrdb",
+		"EntityType": "DATABASE",
+		"Source": {
+			"Provider": "ADLS",
+			"Location": "abfss://adriansfs@adrianssynapsedec.dfs.core.windows.net/hrdb",
+			"Properties": {
+				"FormatType": "parquet",
+				"LinkedServiceName": "adrianfgsynapse-WorkspaceDefaultStorage"
+			}
+		}
+	},
+	"type": "DATABASE"
+}

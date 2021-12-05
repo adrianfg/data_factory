@@ -1,0 +1,118 @@
+{
+	"name": "Employee",
+	"properties": {
+		"Namespace": {
+			"DatabaseName": "hrdb"
+		},
+		"Name": "Employee",
+		"Description": "An individual who is hired to provide services to a company on a regular basis in exchange for compensation.",
+		"EntityType": "TABLE",
+		"TableType": "EXTERNAL",
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"StorageDescriptor": {
+			"Columns": [
+				{
+					"Name": "EmployeeId",
+					"Description": "The unique identifier of an Employee.",
+					"BaseAttributeReference": {
+						"Entity": "Employee.cdm.json/Employee",
+						"Name": "EmployeeId"
+					},
+					"OriginDataTypeName": {
+						"TypeName": "integer",
+						"IsComplexType": false,
+						"IsNullable": false,
+						"Properties": {
+							"HIVE_TYPE_STRING": "integer"
+						}
+					}
+				},
+				{
+					"Name": "DateOfBirth",
+					"Description": "The date of birth of the employee.",
+					"BaseAttributeReference": {
+						"Entity": "Employee.cdm.json/Employee",
+						"Name": "DateOfBirth"
+					},
+					"OriginDataTypeName": {
+						"TypeName": "date",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Properties": {
+							"DateFormat": "YYYY-MM-DD",
+							"HIVE_TYPE_STRING": "date"
+						}
+					}
+				},
+				{
+					"Name": "EmployeeHireDate",
+					"Description": "The date upon which the Employee was hired.",
+					"BaseAttributeReference": {
+						"Entity": "Employee.cdm.json/Employee",
+						"Name": "EmployeeHireDate"
+					},
+					"OriginDataTypeName": {
+						"TypeName": "date",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Properties": {
+							"DateFormat": "YYYY-MM-DD",
+							"HIVE_TYPE_STRING": "date"
+						}
+					}
+				},
+				{
+					"Name": "EmployeeName",
+					"Description": "",
+					"OriginDataTypeName": {
+						"TypeName": "string",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 256,
+						"Properties": {
+							"HIVE_TYPE_STRING": "string"
+						}
+					}
+				}
+			],
+			"Format": {
+				"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+				"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+				"FormatType": "parquet",
+				"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
+				"Properties": {
+					"path": "abfss://adriansfs@adrianssynapsedec.dfs.core.windows.net/hrdb/Employee",
+					"FormatTypeSetToDatabaseDefault": true
+				}
+			},
+			"Source": {
+				"Provider": "ADLS",
+				"Location": "abfss://adriansfs@adrianssynapsedec.dfs.core.windows.net/hrdb/Employee",
+				"Properties": {
+					"LinkedServiceName": "adrianfgsynapse-WorkspaceDefaultStorage",
+					"LocationSetToDatabaseDefault": true
+				}
+			},
+			"Properties": {
+				"textinputformat.record.delimiter": ",",
+				"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+				"derivedModelAttributeInfo": "{\"attributeReferences\":{\"EmployeeId\":{\"entity\":\"Employee.cdm.json/Employee\",\"name\":\"EmployeeId\"},\"DateOfBirth\":{\"entity\":\"Employee.cdm.json/Employee\",\"name\":\"DateOfBirth\"},\"EmployeeHireDate\":{\"entity\":\"Employee.cdm.json/Employee\",\"name\":\"EmployeeHireDate\"}}}"
+			},
+			"Compressed": false,
+			"IsStoredAsSubdirectories": false
+		},
+		"Properties": {
+			"DerivedModelEntityInfo": "{\"entityDirectives\":{\"name\":\"Employee\",\"description\":\"An individual who is hired to provide services to a company on a regular basis in exchange for compensation.\",\"baseEntityReference\":{\"name\":\"Employee\",\"path\":\"Employee.cdm.json/Employee\"},\"primaryKey\":[\"EmployeeId\"],\"projectionInfo\":{\"attributes\":[{\"name\":\"EmployeeId\",\"type\":\"Existing\",\"description\":\"The unique identifier of an Employee.\",\"dataType\":\"integer\",\"isNullable\":false,\"attributeReference\":{\"name\":\"EmployeeId\",\"entity\":\"Employee.cdm.json/Employee\"}},{\"name\":\"DateOfBirth\",\"type\":\"Existing\",\"description\":\"The date of birth of the employee.\",\"dataType\":\"date\",\"isNullable\":true,\"dateFormat\":\"YYYY-MM-DD\",\"attributeReference\":{\"name\":\"DateOfBirth\",\"entity\":\"Employee.cdm.json/Employee\"}},{\"name\":\"EmployeeHireDate\",\"type\":\"Existing\",\"description\":\"The date upon which the Employee was hired.\",\"dataType\":\"date\",\"isNullable\":true,\"dateFormat\":\"YYYY-MM-DD\",\"attributeReference\":{\"name\":\"EmployeeHireDate\",\"entity\":\"Employee.cdm.json/Employee\"}},{\"name\":\"EmployeeName\",\"type\":\"New\",\"description\":\"\",\"dataType\":\"string\",\"isNullable\":true,\"dataTypeLength\":256}]}}}",
+			"Description": "An individual who is hired to provide services to a company on a regular basis in exchange for compensation.",
+			"DisplayFolderInfo": "{\"name\":\"Human Resources & Payroll\",\"colorCode\":\"#042C59\"}",
+			"PrimaryKeys": "EmployeeId",
+			"spark.sql.sources.provider": "parquet"
+		},
+		"Retention": 0,
+		"Temporary": false,
+		"IsRewriteEnabled": false
+	},
+	"type": "TABLE"
+}
