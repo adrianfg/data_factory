@@ -10,6 +10,9 @@
 		},
 		"adrianfgsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://adrianssynapsedec.dfs.core.windows.net"
+		},
+		"bing-covid-19-data_sasUri": {
+			"value": ""
 		}
 	}
 }
